@@ -1,12 +1,17 @@
 Boost libraries - trimmed down for Citra
 ========================================
 
+This is a subset of Boost v1.57.0.
+
 Currently imported libraries:
 -----------------------------
 * concept
 * config
+* container
 * core
+* intrusive
 * iterator
+* move
 * mpl
 * preprocessor
 * range
