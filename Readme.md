@@ -10,6 +10,7 @@ Currently imported libraries:
 * mpl
 * preprocessor
 * range
+* smart_ptr (`intrusive_ptr` only)
 * type_traits
 * utility
 
