@@ -8,4 +8,5 @@ bcp ^
     boost/range/algorithm_ext/ ^
     boost/smart_ptr/intrusive_ptr.hpp ^
     boost/optional.hpp ^
+    boost/variant/ ^
     --boost="%BOOST_PATH%" .
