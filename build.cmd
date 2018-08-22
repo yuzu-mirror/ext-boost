@@ -4,6 +4,7 @@ bcp ^
     boost/container/small_vector.hpp ^
     boost/container/static_vector.hpp ^
     boost/crc.hpp ^
+    boost/functional/hash.hpp ^
     boost/icl/interval_map.hpp ^
     boost/optional.hpp ^
     boost/range/algorithm/ ^
