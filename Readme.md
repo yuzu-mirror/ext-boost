@@ -1,7 +1,7 @@
 Boost libraries - trimmed down for yuzu
 ========================================
 
-This is a subset of Boost v1.68.0 generated using the bcp tool. To get a list of boost modules guaranteed to exist, check the build script.
+This is a subset of Boost v1.71.0 generated using the bcp tool. To get a list of boost modules guaranteed to exist, check the build script.
 
 Updating this repo (on Windows)
 ===============================
@@ -20,4 +20,5 @@ To update the Boost version (or to add a new library) follow these steps:
   - `cd` to this repo's directory (`...\externals\boost\`)
   - Remove the existing boost from the repo: `rm -r boost` (This is only necessary if doing a Boost version upgrade, in case they removed any files in the new version.)
   - Run `.\build.cmd $boost_dir` to build a new trimmed down distro.
+  - Remove `libs\` and `Jamroot` if you didn't introduce any new boost dependencies that aren't header only
   - Add/remove all files in git and commit.
