@@ -457,17 +457,12 @@ std::size_t write_at(SyncRandomAccessWriteDevice& d, uint64_t offset,
  * std::vector.
  */
 template <typename AsyncRandomAccessWriteDevice, typename ConstBufferSequence,
-    BOOST_ASIO_COMPLETION_TOKEN_FOR(void (boost::system::error_code,
-      std::size_t)) WriteHandler
-        BOOST_ASIO_DEFAULT_COMPLETION_TOKEN_TYPE(
-          typename AsyncRandomAccessWriteDevice::executor_type)>
-BOOST_ASIO_INITFN_AUTO_RESULT_TYPE(WriteHandler,
+    typename WriteHandler>
+BOOST_ASIO_INITFN_RESULT_TYPE(WriteHandler,
     void (boost::system::error_code, std::size_t))
 async_write_at(AsyncRandomAccessWriteDevice& d, uint64_t offset,
     const ConstBufferSequence& buffers,
-    BOOST_ASIO_MOVE_ARG(WriteHandler) handler
-      BOOST_ASIO_DEFAULT_COMPLETION_TOKEN(
-        typename AsyncRandomAccessWriteDevice::executor_type));
+    BOOST_ASIO_MOVE_ARG(WriteHandler) handler);
 
 /// Start an asynchronous operation to write a certain amount of data at the
 /// specified offset.
@@ -540,20 +535,14 @@ async_write_at(AsyncRandomAccessWriteDevice& d, uint64_t offset,
  * buffers in one go, and how to use it with arrays, boost::array or
  * std::vector.
  */
-template <typename AsyncRandomAccessWriteDevice,
-    typename ConstBufferSequence, typename CompletionCondition,
-    BOOST_ASIO_COMPLETION_TOKEN_FOR(void (boost::system::error_code,
-      std::size_t)) WriteHandler
-        BOOST_ASIO_DEFAULT_COMPLETION_TOKEN_TYPE(
-          typename AsyncRandomAccessWriteDevice::executor_type)>
-BOOST_ASIO_INITFN_AUTO_RESULT_TYPE(WriteHandler,
+template <typename AsyncRandomAccessWriteDevice, typename ConstBufferSequence,
+    typename CompletionCondition, typename WriteHandler>
+BOOST_ASIO_INITFN_RESULT_TYPE(WriteHandler,
     void (boost::system::error_code, std::size_t))
 async_write_at(AsyncRandomAccessWriteDevice& d,
     uint64_t offset, const ConstBufferSequence& buffers,
     CompletionCondition completion_condition,
-    BOOST_ASIO_MOVE_ARG(WriteHandler) handler
-      BOOST_ASIO_DEFAULT_COMPLETION_TOKEN(
-        typename AsyncRandomAccessWriteDevice::executor_type));
+    BOOST_ASIO_MOVE_ARG(WriteHandler) handler);
 
 #if !defined(BOOST_ASIO_NO_EXTENSIONS)
 #if !defined(BOOST_ASIO_NO_IOSTREAM)
@@ -604,17 +593,11 @@ async_write_at(AsyncRandomAccessWriteDevice& d,
  * manner equivalent to using boost::asio::post().
  */
 template <typename AsyncRandomAccessWriteDevice, typename Allocator,
-    BOOST_ASIO_COMPLETION_TOKEN_FOR(void (boost::system::error_code,
-      std::size_t)) WriteHandler
-        BOOST_ASIO_DEFAULT_COMPLETION_TOKEN_TYPE(
-          typename AsyncRandomAccessWriteDevice::executor_type)>
-BOOST_ASIO_INITFN_AUTO_RESULT_TYPE(WriteHandler,
+    typename WriteHandler>
+BOOST_ASIO_INITFN_RESULT_TYPE(WriteHandler,
     void (boost::system::error_code, std::size_t))
-async_write_at(AsyncRandomAccessWriteDevice& d,
-    uint64_t offset, basic_streambuf<Allocator>& b,
-    BOOST_ASIO_MOVE_ARG(WriteHandler) handler
-      BOOST_ASIO_DEFAULT_COMPLETION_TOKEN(
-        typename AsyncRandomAccessWriteDevice::executor_type));
+async_write_at(AsyncRandomAccessWriteDevice& d, uint64_t offset,
+    basic_streambuf<Allocator>& b, BOOST_ASIO_MOVE_ARG(WriteHandler) handler);
 
 /// Start an asynchronous operation to write a certain amount of data at the
 /// specified offset.
@@ -675,19 +658,13 @@ async_write_at(AsyncRandomAccessWriteDevice& d,
  * immediate completion, invocation of the handler will be performed in a
  * manner equivalent to using boost::asio::post().
  */
-template <typename AsyncRandomAccessWriteDevice,
-    typename Allocator, typename CompletionCondition,
-    BOOST_ASIO_COMPLETION_TOKEN_FOR(void (boost::system::error_code,
-      std::size_t)) WriteHandler
-        BOOST_ASIO_DEFAULT_COMPLETION_TOKEN_TYPE(
-          typename AsyncRandomAccessWriteDevice::executor_type)>
-BOOST_ASIO_INITFN_AUTO_RESULT_TYPE(WriteHandler,
+template <typename AsyncRandomAccessWriteDevice, typename Allocator,
+    typename CompletionCondition, typename WriteHandler>
+BOOST_ASIO_INITFN_RESULT_TYPE(WriteHandler,
     void (boost::system::error_code, std::size_t))
 async_write_at(AsyncRandomAccessWriteDevice& d, uint64_t offset,
     basic_streambuf<Allocator>& b, CompletionCondition completion_condition,
-    BOOST_ASIO_MOVE_ARG(WriteHandler) handler
-      BOOST_ASIO_DEFAULT_COMPLETION_TOKEN(
-        typename AsyncRandomAccessWriteDevice::executor_type));
+    BOOST_ASIO_MOVE_ARG(WriteHandler) handler);
 
 #endif // !defined(BOOST_ASIO_NO_IOSTREAM)
 #endif // !defined(BOOST_ASIO_NO_EXTENSIONS)

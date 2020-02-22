@@ -133,14 +133,6 @@ public:
   /// The type of the executor associated with the object.
   typedef Executor executor_type;
 
-  /// Rebinds the timer type to another executor.
-  template <typename Executor1>
-  struct rebind_executor
-  {
-    /// The timer type when rebound to the specified executor.
-    typedef basic_deadline_timer<Time, TimeTraits, Executor1> other;
-  };
-
   /// The time traits type.
   typedef TimeTraits traits_type;
 
@@ -629,17 +621,13 @@ public:
    * immediate completion, invocation of the handler will be performed in a
    * manner equivalent to using boost::asio::post().
    */
-  template <
-      BOOST_ASIO_COMPLETION_TOKEN_FOR(void (boost::system::error_code))
-        WaitHandler BOOST_ASIO_DEFAULT_COMPLETION_TOKEN_TYPE(executor_type)>
-  BOOST_ASIO_INITFN_AUTO_RESULT_TYPE(WaitHandler,
+  template <typename WaitHandler>
+  BOOST_ASIO_INITFN_RESULT_TYPE(WaitHandler,
       void (boost::system::error_code))
-  async_wait(
-      BOOST_ASIO_MOVE_ARG(WaitHandler) handler
-        BOOST_ASIO_DEFAULT_COMPLETION_TOKEN(executor_type))
+  async_wait(BOOST_ASIO_MOVE_ARG(WaitHandler) handler)
   {
     return async_initiate<WaitHandler, void (boost::system::error_code)>(
-        initiate_async_wait(this), handler);
+        initiate_async_wait(), handler, this);
   }
 
 private:
@@ -648,36 +636,21 @@ private:
   basic_deadline_timer& operator=(
       const basic_deadline_timer&) BOOST_ASIO_DELETED;
 
-  class initiate_async_wait
+  struct initiate_async_wait
   {
-  public:
-    typedef Executor executor_type;
-
-    explicit initiate_async_wait(basic_deadline_timer* self)
-      : self_(self)
-    {
-    }
-
-    executor_type get_executor() const BOOST_ASIO_NOEXCEPT
-    {
-      return self_->get_executor();
-    }
-
     template <typename WaitHandler>
-    void operator()(BOOST_ASIO_MOVE_ARG(WaitHandler) handler) const
+    void operator()(BOOST_ASIO_MOVE_ARG(WaitHandler) handler,
+        basic_deadline_timer* self) const
     {
       // If you get an error on the following line it means that your handler
       // does not meet the documented type requirements for a WaitHandler.
       BOOST_ASIO_WAIT_HANDLER_CHECK(WaitHandler, handler) type_check;
 
       detail::non_const_lvalue<WaitHandler> handler2(handler);
-      self_->impl_.get_service().async_wait(
-          self_->impl_.get_implementation(), handler2.value,
-          self_->impl_.get_implementation_executor());
+      self->impl_.get_service().async_wait(
+          self->impl_.get_implementation(), handler2.value,
+          self->impl_.get_implementation_executor());
     }
-
-  private:
-    basic_deadline_timer* self_;
   };
 
   detail::io_object_impl<
