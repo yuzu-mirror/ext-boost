@@ -48,19 +48,19 @@ class stream_protocol
 {
 public:
   /// Obtain an identifier for the type of the protocol.
-  int type() const BOOST_ASIO_NOEXCEPT
+  int type() const
   {
     return SOCK_STREAM;
   }
 
   /// Obtain an identifier for the protocol.
-  int protocol() const BOOST_ASIO_NOEXCEPT
+  int protocol() const
   {
     return 0;
   }
 
   /// Obtain an identifier for the protocol family.
-  int family() const BOOST_ASIO_NOEXCEPT
+  int family() const
   {
     return AF_UNIX;
   }

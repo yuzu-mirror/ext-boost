@@ -72,14 +72,6 @@ public:
   /// The type of the executor associated with the object.
   typedef Executor executor_type;
 
-  /// Rebinds the resolver type to another executor.
-  template <typename Executor1>
-  struct rebind_executor
-  {
-    /// The resolver type when rebound to the specified executor.
-    typedef basic_resolver<InternetProtocol, Executor1> other;
-  };
-
   /// The protocol type.
   typedef InternetProtocol protocol_type;
 
@@ -621,19 +613,15 @@ public:
    * A successful resolve operation is guaranteed to pass a non-empty range to
    * the handler.
    */
-  template <
-      BOOST_ASIO_COMPLETION_TOKEN_FOR(void (boost::system::error_code,
-        results_type)) ResolveHandler
-          BOOST_ASIO_DEFAULT_COMPLETION_TOKEN_TYPE(executor_type)>
-  BOOST_ASIO_INITFN_AUTO_RESULT_TYPE(ResolveHandler,
+  template <typename ResolveHandler>
+  BOOST_ASIO_INITFN_RESULT_TYPE(ResolveHandler,
       void (boost::system::error_code, results_type))
   async_resolve(const query& q,
-      BOOST_ASIO_MOVE_ARG(ResolveHandler) handler
-        BOOST_ASIO_DEFAULT_COMPLETION_TOKEN(executor_type))
+      BOOST_ASIO_MOVE_ARG(ResolveHandler) handler)
   {
     return boost::asio::async_initiate<ResolveHandler,
       void (boost::system::error_code, results_type)>(
-        initiate_async_resolve(this), handler, q);
+        initiate_async_resolve(), handler, this, q);
   }
 #endif // !defined(BOOST_ASIO_NO_DEPRECATED)
 
@@ -679,16 +667,12 @@ public:
    * <tt>c:\\windows\\system32\\drivers\\etc\\services</tt>. Operating systems
    * may use additional locations when resolving service names.
    */
-  template <
-      BOOST_ASIO_COMPLETION_TOKEN_FOR(void (boost::system::error_code,
-        results_type)) ResolveHandler
-          BOOST_ASIO_DEFAULT_COMPLETION_TOKEN_TYPE(executor_type)>
-  BOOST_ASIO_INITFN_AUTO_RESULT_TYPE(ResolveHandler,
+  template <typename ResolveHandler>
+  BOOST_ASIO_INITFN_RESULT_TYPE(ResolveHandler,
       void (boost::system::error_code, results_type))
   async_resolve(BOOST_ASIO_STRING_VIEW_PARAM host,
       BOOST_ASIO_STRING_VIEW_PARAM service,
-      BOOST_ASIO_MOVE_ARG(ResolveHandler) handler
-        BOOST_ASIO_DEFAULT_COMPLETION_TOKEN(executor_type))
+      BOOST_ASIO_MOVE_ARG(ResolveHandler) handler)
   {
     return async_resolve(host, service, resolver_base::flags(),
         BOOST_ASIO_MOVE_CAST(ResolveHandler)(handler));
@@ -741,24 +725,20 @@ public:
    * <tt>c:\\windows\\system32\\drivers\\etc\\services</tt>. Operating systems
    * may use additional locations when resolving service names.
    */
-  template <
-      BOOST_ASIO_COMPLETION_TOKEN_FOR(void (boost::system::error_code,
-        results_type)) ResolveHandler
-          BOOST_ASIO_DEFAULT_COMPLETION_TOKEN_TYPE(executor_type)>
-  BOOST_ASIO_INITFN_AUTO_RESULT_TYPE(ResolveHandler,
+  template <typename ResolveHandler>
+  BOOST_ASIO_INITFN_RESULT_TYPE(ResolveHandler,
       void (boost::system::error_code, results_type))
   async_resolve(BOOST_ASIO_STRING_VIEW_PARAM host,
       BOOST_ASIO_STRING_VIEW_PARAM service,
       resolver_base::flags resolve_flags,
-      BOOST_ASIO_MOVE_ARG(ResolveHandler) handler
-        BOOST_ASIO_DEFAULT_COMPLETION_TOKEN(executor_type))
+      BOOST_ASIO_MOVE_ARG(ResolveHandler) handler)
   {
     basic_resolver_query<protocol_type> q(static_cast<std::string>(host),
         static_cast<std::string>(service), resolve_flags);
 
     return boost::asio::async_initiate<ResolveHandler,
       void (boost::system::error_code, results_type)>(
-        initiate_async_resolve(this), handler, q);
+        initiate_async_resolve(), handler, this, q);
   }
 
   /// Asynchronously perform forward resolution of a query to a list of entries.
@@ -806,16 +786,12 @@ public:
    * <tt>c:\\windows\\system32\\drivers\\etc\\services</tt>. Operating systems
    * may use additional locations when resolving service names.
    */
-  template <
-      BOOST_ASIO_COMPLETION_TOKEN_FOR(void (boost::system::error_code,
-        results_type)) ResolveHandler
-          BOOST_ASIO_DEFAULT_COMPLETION_TOKEN_TYPE(executor_type)>
-  BOOST_ASIO_INITFN_AUTO_RESULT_TYPE(ResolveHandler,
+  template <typename ResolveHandler>
+  BOOST_ASIO_INITFN_RESULT_TYPE(ResolveHandler,
       void (boost::system::error_code, results_type))
   async_resolve(const protocol_type& protocol,
       BOOST_ASIO_STRING_VIEW_PARAM host, BOOST_ASIO_STRING_VIEW_PARAM service,
-      BOOST_ASIO_MOVE_ARG(ResolveHandler) handler
-        BOOST_ASIO_DEFAULT_COMPLETION_TOKEN(executor_type))
+      BOOST_ASIO_MOVE_ARG(ResolveHandler) handler)
   {
     return async_resolve(protocol, host, service, resolver_base::flags(),
         BOOST_ASIO_MOVE_CAST(ResolveHandler)(handler));
@@ -871,17 +847,13 @@ public:
    * <tt>c:\\windows\\system32\\drivers\\etc\\services</tt>. Operating systems
    * may use additional locations when resolving service names.
    */
-  template <
-      BOOST_ASIO_COMPLETION_TOKEN_FOR(void (boost::system::error_code,
-        results_type)) ResolveHandler
-          BOOST_ASIO_DEFAULT_COMPLETION_TOKEN_TYPE(executor_type)>
-  BOOST_ASIO_INITFN_AUTO_RESULT_TYPE(ResolveHandler,
+  template <typename ResolveHandler>
+  BOOST_ASIO_INITFN_RESULT_TYPE(ResolveHandler,
       void (boost::system::error_code, results_type))
   async_resolve(const protocol_type& protocol,
       BOOST_ASIO_STRING_VIEW_PARAM host, BOOST_ASIO_STRING_VIEW_PARAM service,
       resolver_base::flags resolve_flags,
-      BOOST_ASIO_MOVE_ARG(ResolveHandler) handler
-        BOOST_ASIO_DEFAULT_COMPLETION_TOKEN(executor_type))
+      BOOST_ASIO_MOVE_ARG(ResolveHandler) handler)
   {
     basic_resolver_query<protocol_type> q(
         protocol, static_cast<std::string>(host),
@@ -889,7 +861,7 @@ public:
 
     return boost::asio::async_initiate<ResolveHandler,
       void (boost::system::error_code, results_type)>(
-        initiate_async_resolve(this), handler, q);
+        initiate_async_resolve(), handler, this, q);
   }
 
   /// Perform reverse resolution of an endpoint to a list of entries.
@@ -958,19 +930,15 @@ public:
    * A successful resolve operation is guaranteed to pass a non-empty range to
    * the handler.
    */
-  template <
-      BOOST_ASIO_COMPLETION_TOKEN_FOR(void (boost::system::error_code,
-        results_type)) ResolveHandler
-          BOOST_ASIO_DEFAULT_COMPLETION_TOKEN_TYPE(executor_type)>
-  BOOST_ASIO_INITFN_AUTO_RESULT_TYPE(ResolveHandler,
+  template <typename ResolveHandler>
+  BOOST_ASIO_INITFN_RESULT_TYPE(ResolveHandler,
       void (boost::system::error_code, results_type))
   async_resolve(const endpoint_type& e,
-      BOOST_ASIO_MOVE_ARG(ResolveHandler) handler
-        BOOST_ASIO_DEFAULT_COMPLETION_TOKEN(executor_type))
+      BOOST_ASIO_MOVE_ARG(ResolveHandler) handler)
   {
     return boost::asio::async_initiate<ResolveHandler,
       void (boost::system::error_code, results_type)>(
-        initiate_async_resolve(this), handler, e);
+        initiate_async_resolve(), handler, this, e);
   }
 
 private:
@@ -978,24 +946,11 @@ private:
   basic_resolver(const basic_resolver&) BOOST_ASIO_DELETED;
   basic_resolver& operator=(const basic_resolver&) BOOST_ASIO_DELETED;
 
-  class initiate_async_resolve
+  struct initiate_async_resolve
   {
-  public:
-    typedef Executor executor_type;
-
-    explicit initiate_async_resolve(basic_resolver* self)
-      : self_(self)
-    {
-    }
-
-    executor_type get_executor() const BOOST_ASIO_NOEXCEPT
-    {
-      return self_->get_executor();
-    }
-
     template <typename ResolveHandler, typename Query>
     void operator()(BOOST_ASIO_MOVE_ARG(ResolveHandler) handler,
-        const Query& q) const
+        basic_resolver* self, const Query& q) const
     {
       // If you get an error on the following line it means that your handler
       // does not meet the documented type requirements for a ResolveHandler.
@@ -1003,13 +958,10 @@ private:
           ResolveHandler, handler, results_type) type_check;
 
       boost::asio::detail::non_const_lvalue<ResolveHandler> handler2(handler);
-      self_->impl_.get_service().async_resolve(
-          self_->impl_.get_implementation(), q, handler2.value,
-          self_->impl_.get_implementation_executor());
+      self->impl_.get_service().async_resolve(
+          self->impl_.get_implementation(), q, handler2.value,
+          self->impl_.get_implementation_executor());
     }
-
-  private:
-    basic_resolver* self_;
   };
 
 # if defined(BOOST_ASIO_WINDOWS_RUNTIME)
